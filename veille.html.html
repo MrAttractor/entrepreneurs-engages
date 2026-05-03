@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veille AAP · Entrepreneurs Engagés</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0f1b3d; --navy2:#1a2b5e; --green:#6ab04c; --green2:#9fd47a;
+  --gold:#f0a500; --cream:#f7f5f0; --cream2:#ede9e0;
+  --text:#1a1a2e; --muted:#6b7280; --white:#fff;
+  --danger:#e05252; --info:#3b82f6; --success:#22c55e;
+  --border:rgba(15,27,61,0.1); --shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* HEADER */
+.hdr{background:var(--navy);height:58px;display:flex;align-items:center;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--green)}
+.hdr-logo{display:flex;align-items:center;gap:9px}
+.hdr-dot{width:30px;height:30px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.02em}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.45)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.live{display:flex;align-items:center;gap:5px;background:rgba(106,176,76,.15);border:1px solid rgba(106,176,76,.3);color:var(--green2);font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px}
+.pulse{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 58px)}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;padding:1.2rem 0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto}
+.sb-sec{padding:0 .9rem;margin-bottom:1.4rem}
+.sb-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fb{display:flex;align-items:center;gap:7px;width:100%;padding:6px 9px;border-radius:8px;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);text-align:left;transition:all .15s}
+.fb:hover{background:var(--cream);color:var(--text)}
+.fb.active{background:var(--navy);color:#fff}
+.fb .cnt{margin-left:auto;font-size:10px;background:rgba(0,0,0,.1);border-radius:10px;padding:1px 6px}
+.fb.active .cnt{background:rgba(255,255,255,.2)}
+.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.src-list{font-size:11px;color:var(--muted);line-height:1.9}
+
+/* MAIN */
+.main{flex:1;padding:1.25rem;min-width:0}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:1.1rem;flex-wrap:wrap}
+.sw{flex:1;min-width:180px;position:relative}
+.sw svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.4}
+.si{width:100%;padding:8px 11px 8px 34px;border:1px solid var(--border);border-radius:9px;background:#fff;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .15s}
+.si:focus{border-color:var(--navy2)}
+.btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy2)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:var(--green2);color:var(--text)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.1rem}
+.sc{background:#fff;border:1px solid var(--border);border-radius:11px;padding:12px 14px}
+.sc-lbl{font-size:10px;color:var(--muted)}
+.sc-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--navy)}
+.sc-sub{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* CARDS */
+.cards{display:flex;flex-direction:column;gap:9px}
+.card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:1rem 1.15rem;display:grid;grid-template-columns:1fr auto;gap:10px;transition:box-shadow .2s,border-color .2s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.card.urgence::before{background:var(--danger)}
+.card.actif::before{background:var(--green)}
+.card.veille::before{background:var(--gold)}
+.card:hover{box-shadow:var(--shadow);border-color:rgba(15,27,61,.16)}
+.ch{display:flex;align-items:flex-start;gap:9px;margin-bottom:5px}
+.clogo{width:30px;height:30px;border-radius:7px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy2);flex-shrink:0;font-family:'Syne',sans-serif}
+.ctitle{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:2px}
+.csrc{font-size:11px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;border:1px solid}
+.tp{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.to{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+.tc{background:#fefce8;color:#a16207;border-color:#fef08a}
+.ta{background:#f0f9ff;color:#0369a1;border-color:#bae6fd}
+.excerpt{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dl{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:6px}
+.dl-u{background:#fee2e2;color:#dc2626}.dl-o{background:#dcfce7;color:#16a34a}.dl-s{background:#fef9c3;color:#a16207}.dl-c{background:#f3f4f6;color:#9ca3af}
+.bud{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.ca{display:flex;flex-direction:column;gap:5px;align-items:flex-end;justify-content:space-between}
+.sr{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;border:2px solid;flex-shrink:0}
+.sh{color:#16a34a;border-color:#16a34a;background:#f0fdf4}
+.sm{color:#a16207;border-color:#ca8a04;background:#fefce8}
+.sl{color:#9ca3af;border-color:#d1d5db;background:#f9fafb}
+.sl-lbl{font-size:9px;color:var(--muted);text-align:center}
+.ab{font-size:11px;font-weight:600;padding:5px 9px;border-radius:7px;border:1px solid;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .12s}
+.ab-blue{background:var(--navy);color:#fff;border-color:var(--navy)}.ab-blue:hover{background:var(--navy2)}
+.ab-green{background:var(--green);color:#fff;border-color:var(--green)}.ab-green:hover{opacity:.85}
+.ab-out{background:transparent;color:var(--muted);border-color:var(--border)}.ab-out:hover{border-color:var(--gold);color:var(--gold)}
+.ab-out.starred{color:var(--gold);border-color:var(--gold);background:#fefce8}
+
+/* MODAL BASE */
+.overlay{position:fixed;inset:0;background:rgba(15,27,61,.55);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:all}
+
+/* ANALYSIS SIDE PANEL */
+.apanel-wrap{position:fixed;inset:0;background:rgba(15,27,61,.45);z-index:180;opacity:0;pointer-events:none;transition:opacity .2s}
+.apanel-wrap.open{opacity:1;pointer-events:all}
+.apanel{position:absolute;right:0;top:58px;bottom:0;width:520px;background:#fff;overflow-y:auto;padding:1.5rem;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.apanel-wrap.open .apanel{transform:translateX(0)}
+
+/* DOSSIER MODAL */
+.dmodal{background:#fff;border-radius:18px;width:720px;max-width:95vw;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.dm-hdr{background:var(--navy);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.dm-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;flex:1}
+.dm-close{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:20px;line-height:1}
+.dm-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:#fff}
+.dm-tab{flex:1;padding:10px;font-size:12px;font-weight:500;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif}
+.dm-tab.active{color:var(--navy);border-bottom-color:var(--green);background:var(--cream)}
+.dm-body{flex:1;overflow-y:auto;padding:1.25rem 1.5rem}
+.dm-footer{padding:.9rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:#fff}
+
+/* DOC OUTPUT */
+.doc-output{background:var(--cream);border-radius:10px;padding:1.25rem;font-size:13px;line-height:1.7;color:var(--text);min-height:200px;white-space:pre-wrap;font-family:'DM Sans',sans-serif}
+.doc-output.generating{color:var(--muted);font-style:italic}
+.doc-section{margin-bottom:1rem}
+.doc-section h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
+.doc-section p{font-size:13px;color:var(--text);line-height:1.7}
+
+/* CHECKLIST */
+.checklist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ci{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border-radius:8px;background:var(--cream);border:1px solid var(--border)}
+.ci input[type=checkbox]{width:15px;height:15px;margin-top:1px;flex-shrink:0;accent-color:var(--navy)}
+.ci label{font-size:12px;color:var(--text);line-height:1.4;cursor:pointer}
+.ci.done label{text-decoration:line-through;color:var(--muted)}
+
+/* BUDGET TABLE */
+.btable{width:100%;border-collapse:collapse;font-size:12px}
+.btable th{background:var(--navy);color:#fff;padding:8px 10px;text-align:left;font-family:'Syne',sans-serif;font-size:11px;font-weight:600}
+.btable td{padding:7px 10px;border-bottom:1px solid var(--border)}
+.btable tr:nth-child(even) td{background:var(--cream)}
+.btable .total td{font-weight:600;background:var(--cream2)}
+
+/* ASSISTANT PANEL */
+.aipanel{position:fixed;right:0;top:58px;bottom:0;width:380px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:90;box-shadow:-4px 0 20px rgba(0,0,0,.08)}
+.aipanel.open{transform:translateX(0)}
+.aip-hdr{padding:.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:var(--navy);color:#fff;flex-shrink:0}
+.aip-av{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.aip-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.aip-sub{font-size:10px;opacity:.55}
+.aip-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;line-height:1}
+.msgs{flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;gap:7px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.mb{max-width:88%;padding:9px 12px;border-radius:13px;font-size:12px;line-height:1.55}
+.msg.ai .mb{background:var(--cream);color:var(--text);border-radius:4px 13px 13px 13px}
+.msg.user .mb{background:var(--navy);color:#fff;border-radius:13px 4px 13px 13px}
+.mav{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Syne',sans-serif}
+.mav-ai{background:var(--green);color:#fff}.mav-u{background:var(--navy2);color:#fff}
+.qdots span{display:inline-block;width:5px;height:5px;background:var(--muted);border-radius:50%;animation:bop .8s infinite;margin:0 2px}
+.qdots span:nth-child(2){animation-delay:.15s}.qdots span:nth-child(3){animation-delay:.3s}
+@keyframes bop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.qa{padding:.65rem .9rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0}
+.qb{font-size:11px;padding:4px 9px;border:1px solid var(--border);border-radius:20px;background:var(--cream);color:var(--muted);cursor:pointer;transition:all .12s;font-family:'DM Sans',sans-serif}
+.qb:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+.pi-wrap{padding:.65rem .9rem;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0}
+.pi{flex:1;padding:8px 11px;border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border .15s}
+.pi:focus{border-color:var(--navy)}
+.sb2{width:36px;height:36px;border-radius:9px;background:var(--navy);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;flex-shrink:0}
+.sb2:hover{background:var(--green)}
+
+/* SCAN MODAL */
+.smodal{background:#fff;border-radius:18px;padding:1.75rem;width:500px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.smod-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:.75rem}
+.site-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;border:1px solid var(--border);margin-bottom:7px;background:var(--cream);transition:all .2s}
+.site-row.scanning{border-color:var(--green);background:#f0fdf4}
+.site-row.done{border-color:#86efac;background:#f0fdf4}
+.site-row.err{border-color:#fca5a5;background:#fef2f2}
+.site-name{font-size:12px;font-weight:500;flex:1}.site-url{font-size:10px;color:var(--muted)}
+.site-st{font-size:11px;font-weight:500;margin-left:auto}
+.site-st.ok{color:var(--success)}.site-st.run{color:var(--green)}.site-st.er{color:var(--danger)}
+.spin{width:13px;height:13px;border:2px solid var(--green);border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mf{display:flex;gap:8px;margin-top:1.1rem;justify-content:flex-end}
+.bc{padding:8px 16px;border-radius:9px;border:1px solid var(--border);background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px}
+.bl{padding:8px 16px;border-radius:9px;border:none;background:var(--navy);color:#fff;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--navy);color:#fff;padding:10px 16px;border-radius:11px;font-size:12px;z-index:400;transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:7px;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.s{border-left:3px solid var(--green)}.toast.i{border-left:3px solid var(--info)}
+
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}
+.empty h3{font-family:'Syne',sans-serif;font-size:15px;color:var(--navy);margin-bottom:.4rem}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">
+    <div class="hdr-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <div>
+      <div class="hdr-title">Entrepreneurs Engagés · Veille AAP</div>
+      <div class="hdr-sub">Paris 20e QPV · ODD 4 · Côte d'Ivoire — Rédaction dossiers intégrée</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="live"><div class="pulse"></div>Veille active</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.4)">Màj: <span id="last-upd">—</span></div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-sec">
+      <div class="sb-lbl">Périmètre</div>
+      <button class="fb active" onclick="filter('all',this)"><div class="fdot" style="background:var(--navy2)"></div>Tous les AAP<span class="cnt" id="c-all">0</span></button>
+      <button class="fb" onclick="filter('paris',this)"><div class="fdot" style="background:#3b82f6"></div>Paris 20e QPV<span class="cnt" id="c-paris">0</span></button>
+      <button class="fb" onclick="filter('odd4',this)"><div class="fdot" style="background:#22c55e"></div>ODD 4 — Éducation<span class="cnt" id="c-odd4">0</span></button>
+      <button class="fb" onclick="filter('ci',this)"><div class="fdot" style="background:#eab308"></div>Côte d'Ivoire<span class="cnt" id="c-ci">0</span></button>
+      <button class="fb" onclick="filter('africa',this)"><div class="fdot" style="background:#06b6d4"></div>Afrique<span class="cnt" id="c-africa">0</span></button>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Statut</div>
+      <button class="fb" onclick="filter('urgence',this)"><div class="fdot" style="background:var(--danger)"></div>Urgence &lt;15j<span class="cnt" id="c-urg">0</span></button>
+      <button class="fb" onclick="filter('actif',this)"><div class="fdot" style="background:var(--green)"></div>En cours<span class="cnt" id="c-act">0</span></button>
+      <button class="fb" onclick="filter('veille',this)"><div class="fdot" style="background:var(--gold)"></div>À suivre<span class="cnt" id="c-veil">0</span></button>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Sources (12)</div>
+      <div class="src-list">
+        <div>· Mairie Paris 20e</div><div>· Fondation de France</div>
+        <div>· UNESCO / UNICEF</div><div>· AFD Côte d'Ivoire</div>
+        <div>· Agence Cohésion Terr.</div><div>· Fondation SNCF</div>
+        <div>· Caisse des Dépôts</div><div>· Erasmus+</div>
+        <div>· Orange Solidarité</div><div>· Fondation Bettencourt</div>
+        <div>· Club Inspire CI</div><div>· ANADER / FDFP CI</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="sw">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="si" type="text" placeholder="Rechercher un AAP, financeur, thème…" oninput="search(this.value)" id="search-in">
+      </div>
+      <button class="btn btn-navy" onclick="openScan()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>Scanner les sources
+      </button>
+      <button class="btn btn-green" onclick="toggleAI()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Assistant IA
+      </button>
+    </div>
+
+    <div class="stats">
+      <div class="sc"><div class="sc-lbl">Appels actifs</div><div class="sc-val" id="s-act">0</div><div class="sc-sub">dans la base</div></div>
+      <div class="sc"><div class="sc-lbl">Clôture &lt;15j</div><div class="sc-val" id="s-urg">0</div><div class="sc-sub" id="s-urg-sub">—</div></div>
+      <div class="sc"><div class="sc-lbl">Sources</div><div class="sc-val">12</div><div class="sc-sub">sites surveillés</div></div>
+      <div class="sc"><div class="sc-lbl">Score IA moyen</div><div class="sc-val" id="s-score">—</div><div class="sc-sub">pertinence EE</div></div>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </main>
+</div>
+
+<!-- ANALYSIS PANEL -->
+<div class="apanel-wrap" id="apanel-wrap" onclick="closeAnalysis(event)">
+  <div class="apanel" id="apanel"><div id="apanel-body"></div></div>
+</div>
+
+<!-- DOSSIER MODAL -->
+<div class="overlay" id="doverlay">
+  <div class="dmodal">
+    <div class="dm-hdr">
+      <div>
+        <div class="dm-title" id="dm-title">Préparer le dossier</div>
+        <div style="font-size:11px;opacity:.55;margin-top:1px" id="dm-src">—</div>
+      </div>
+      <button class="dm-close" onclick="closeDossier()">✕</button>
+    </div>
+    <div class="dm-tabs">
+      <button class="dm-tab active" onclick="dmTab('lettre',this)">✍ Lettre de motivation</button>
+      <button class="dm-tab" onclick="dmTab('note',this)">📄 Note de projet</button>
+      <button class="dm-tab" onclick="dmTab('budget',this)">💶 Budget</button>
+      <button class="dm-tab" onclick="dmTab('checklist',this)">✅ Checklist</button>
+      <button class="dm-tab" onclick="dmTab('cadre',this)">🎯 Cadre logique</button>
+    </div>
+    <div class="dm-body" id="dm-body">
+      <div class="empty"><h3>Sélectionnez un onglet</h3><p style="font-size:12px;margin-top:5px">Chaque document est généré par l'IA avec les informations de votre association.</p></div>
+    </div>
+    <div class="dm-footer">
+      <button class="bc" onclick="closeDossier()">Fermer</button>
+      <button class="btn btn-navy" onclick="copyDoc()">📋 Copier le document</button>
+      <button class="btn btn-green" onclick="askAIAboutDossier()">💬 Questions à l'assistant</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCAN MODAL -->
+<div class="overlay" id="soverlay">
+  <div class="smodal">
+    <div class="smod-title">Scan des sources — Veille AAP</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:.9rem">L'assistant visite les 12 sources et détecte les nouveaux appels à projets correspondant à votre périmètre.</p>
+    <div id="scan-list"></div>
+    <div class="mf">
+      <button class="bc" onclick="closeScan()">Annuler</button>
+      <button class="bl" id="scan-launch" onclick="launchScan()">Lancer la veille</button>
+    </div>
+  </div>
+</div>
+
+<!-- ASSISTANT PANEL -->
+<div class="aipanel" id="aipanel">
+  <div class="aip-hdr">
+    <div class="aip-av"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M5 19a7 7 0 0 0 14 0v-1H5v1M8 11v2H6v-2h2m4 0v2h-2v-2h2m4 0v2h-2v-2h2Z"/></svg></div>
+    <div><div class="aip-title">Assistant Veille & Dossiers</div><div class="aip-sub">Powered by Claude · Contexte EE intégré</div></div>
+    <button class="aip-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="msgs" id="msgs">
+    <div class="msg ai">
+      <div class="mav mav-ai">EE</div>
+      <div class="mb">Bonjour ! Je connais votre association Entrepreneurs Engagés et tous vos projets.<br><br>Je peux <strong>analyser les AAP</strong>, vérifier votre <strong>éligibilité</strong>, ou vous aider à <strong>rédiger vos dossiers de candidature</strong> en utilisant toutes les informations que vous avez partagées. Par quoi commençons-nous ?</div>
+    </div>
+  </div>
+  <div class="qa">
+    <button class="qb" onclick="ask('Quels sont les AAP les plus urgents à traiter cette semaine ?')">Urgences semaine</button>
+    <button class="qb" onclick="ask('Analyse notre éligibilité pour l\'appel AFD Côte d\'Ivoire')">Éligibilité AFD CI</button>
+    <button class="qb" onclick="ask('Quels sont nos 3 arguments les plus forts pour les AAP ODD4 ?')">Nos atouts ODD 4</button>
+    <button class="qb" onclick="ask('Rédige l\'accroche de notre lettre de motivation pour la Fondation de France')">Accroche Fdn France</button>
+    <button class="qb" onclick="ask('Quels documents manquent pour candidater à l\'AFD Côte d\'Ivoire ?')">Docs manquants AFD</button>
+  </div>
+  <div class="pi-wrap">
+    <input class="pi" id="ai-in" type="text" placeholder="Posez votre question…" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="sb2" onclick="sendMsg()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// ASSOCIATION CONTEXT — nourrit tous les documents IA
+// ═══════════════════════════════════════════════════════
+const EE_CONTEXT = `
+ASSOCIATION : Entrepreneurs Engagés
+STATUT : Association loi 1901
+DATE DE CRÉATION : 4 février 2022
+SIÈGE : Paris, France
+SITE : entrepreneurs-engages.netlify.app
+
+MISSION :
+Ouvrir et faire vivre des bibliothèques dans des écoles et lycées en Côte d'Ivoire.
+Aller au-delà du don de livres : animer la bibliothèque pour qu'elle "vive".
+Contribuer à deux ODD Nations Unies : ODD 1 (lutte contre la pauvreté) et ODD 4 (éducation de qualité).
+
+PROGRAMME PHARE : "Graine des Champions" (année 4, 2025-2026)
+- Lancement d'une compétition d'orthographe dans tout le réseau d'écoles partenaires
+- Déroulé en 2 temps : (1) projection de film inspirant autour d'un concours d'orthographe, (2) compétition où les élèves épellent des mots, enrichissent leur vocabulaire et développent leur confiance
+- Objectif : susciter l'amour de la lecture, encourager l'excellence, révéler le potentiel de chaque enfant
+- Récompenses : voyages d'études en France, voyages de découverte en Côte d'Ivoire, équipements scolaires et bons de fournitures, accompagnement au leadership
+
+PROGRAMME 2025-2026 :
+- Partenaire principal : Groupe scolaire SEBACO (depuis 31 mai 2024), Abidjan
+- 4 écoles mobilisées, réparties en 2 zones : Abidjan Nord et Abidjan Sud
+- Calendrier : lancement 15/04/2026 → phases éliminatoires 20-24/04 → finale 30/04 → fête de récompenses 20/05/2026
+
+PARTENAIRES INSTITUTIONNELS : UNESCO, UNICEF, ONU (logos présents dans les présentations)
+
+VISION 2030 : Devenir un modèle réplicable dans toute l'Afrique. Déployer dans le maximum d'écoles de Côte d'Ivoire.
+
+STRATÉGIE (4 piliers) :
+1. Vision : ouvrir des Bibliothèques Engagées dans toutes les écoles
+2. Projet : mettre en place le projet pilote (en cours)
+3. Stratégie : dupliquer le modèle dans toutes les écoles
+4. Opérationnel : fixer des partenariats solides avec RSE/Bénévoles
+
+PROFIL RSE : Recherche partenaires stratégiques, sponsors engagés, mécènes prêts à investir dans le capital humain.
+
+VALEURS : engagement, impact durable, excellence éducative, entrepreneuriat social.
+
+RÉSULTATS DÉJÀ OBTENUS :
+- Bibliothèques ouvertes et actives en Côte d'Ivoire
+- Tableaux d'honneur décernés aux élèves
+- Cérémonies de remise de prix avec toques de diplômés
+- Présence et présentation à l'UNESCO Paris
+- 4 années d'expérience terrain confirmées
+`;
+
+// ═══════════════════════════════════════════════════════
+// AAP DATA
+// ═══════════════════════════════════════════════════════
+const DATA = [
+  {id:1,title:'AAP "Éducation inclusive — Quartiers Prioritaires" 2026',source:'Fondation de France',logo:'FdF',
+   tags:['paris','odd4'],tagL:['Paris 20e QPV','ODD 4 Éducation'],
+   excerpt:'Soutien aux projets favorisant l\'accès à l\'éducation de qualité dans les QPV d\'Île-de-France. Priorité aux actions combinant lecture, numérique et accompagnement.',
+   deadline:'2026-05-16',dlTxt:'16 mai 2026',budget:'Jusqu\'à 30 000 €',status:'urgence',score:92,sclass:'sh',url:'https://fondationdefrance.org',
+   financeur:'Fondation de France',criteres:['Association loi 1901 ✓','Projet Île-de-France ✓','Public 6-18 ans ✓','Budget max 30K€'],
+   docs:['Bilan financier 2025','Rapport d\'activité avec indicateurs d\'impact','Présentation programme Graine des Champions','Lettre de soutien école SEBACO'],
+   conseil:'Clôture dans 16 jours — PRIORITÉ ABSOLUE. Mettre en avant résultats chiffrés et partenariat UNESCO.'},
+  {id:2,title:'Programme "Lire et Grandir" — Bibliothèques scolaires',source:'Fondation SNCF',logo:'SNCF',
+   tags:['odd4'],tagL:['ODD 4 Éducation'],
+   excerpt:'La Fondation SNCF soutient des projets de lutte contre l\'illettrisme et de promotion de la lecture pour les 6-16 ans, avec priorité aux associations expérimentées.',
+   deadline:'2026-06-30',dlTxt:'30 juin 2026',budget:'5 000 – 20 000 €',status:'actif',score:88,sclass:'sh',url:'https://fondation.sncf.com',
+   financeur:'Fondation SNCF',criteres:['Association loi 1901 ✓','Action lecture/illettrisme ✓','Public 6-16 ans ✓','Budget 5-20K€'],
+   docs:['Dossier candidature Fondation SNCF','Bilan N-1','Photos et témoignages terrain'],
+   conseil:'Mettre en avant l\'aspect "compétition d\'orthographe" comme innovation. Illustrer avec résultats concrets.'},
+  {id:3,title:'AAP Développement Local — Éducation Côte d\'Ivoire 2026',source:'AFD / Expertise France',logo:'AFD',
+   tags:['ci','odd4','africa'],tagL:['Côte d\'Ivoire','ODD 4','Afrique'],
+   excerpt:'Appel à propositions pour améliorer l\'accès à une éducation de qualité en Côte d\'Ivoire. Focus alphabétisation, ressources pédagogiques, formation enseignants.',
+   deadline:'2026-07-15',dlTxt:'15 juillet 2026',budget:'50 000 – 200 000 €',status:'actif',score:95,sclass:'sh',url:'https://afd.fr',
+   financeur:'AFD / Expertise France',criteres:['Association/ONG enregistrée ✓','Expérience terrain CI ✓ (depuis 2022)','Projet à impact mesurable ✓','Budget min 50K€ — à adapter'],
+   docs:['Statuts + récépissé CI','Rapport terrain 2024-2025','Convention partenariat SEBACO','Cadre logique du projet'],
+   conseil:'Budget doit dépasser 50K. Prévoir co-financement ou consortium. Contacter bureau AFD Abidjan.'},
+  {id:4,title:'Dotation "Vivre Ensemble" — QPV Paris',source:'Mairie de Paris',logo:'MDP',
+   tags:['paris'],tagL:['Paris 20e QPV'],
+   excerpt:'Soutien aux associations dans les quartiers politique de la ville parisiens. Accent sur lien social, culture et éducation populaire. Résidents du 20e prioritaires.',
+   deadline:'2026-04-30',dlTxt:'30 avril 2026',budget:'Jusqu\'à 8 000 €',status:'urgence',score:68,sclass:'sm',url:'https://mairie20.paris.fr',
+   financeur:'Mairie de Paris 20e',criteres:['Lien avec le 20e arrondissement — à vérifier','Action culturelle/éducative ✓','Budget ≤ 8K€'],
+   docs:['Justificatif activité Paris 20e','Liste bénéficiaires','Budget prévisionnel'],
+   conseil:'Deadline très proche. Décider rapidement si vous avez un lien établi avec le 20e. Sinon reporter.'},
+  {id:5,title:'UNESCO — Partenariat Programme EFA / Education pour Tous',source:'UNESCO',logo:'UN',
+   tags:['odd4','africa','ci'],tagL:['ODD 4','Afrique','Côte d\'Ivoire'],
+   excerpt:'Opportunité de partenariat associatif avec l\'UNESCO pour des projets d\'alphabétisation et accès au livre en Afrique subsaharienne. Cadre multi-annuel 2026-2028.',
+   deadline:'2026-09-01',dlTxt:'1er sept. 2026',budget:'Partenariat non financier + visibilité',status:'veille',score:80,sclass:'sh',url:'https://unesco.org',
+   financeur:'UNESCO',criteres:['Organisation reconnue ✓','Activité éducation ✓','Présence terrain Afrique ✓'],
+   docs:['Dossier de présentation EE','Rapport d\'impact','Lettres de soutien'],
+   conseil:'Ouvre des portes à d\'autres bailleurs. Prioriser pour la notoriété, pas pour financement immédiat.'},
+  {id:6,title:'Orange Solidarité — Digital et Éducation en Afrique 2026',source:'Orange Fondation',logo:'OR',
+   tags:['africa','ci','odd4'],tagL:['Afrique','Côte d\'Ivoire','ODD 4'],
+   excerpt:'Soutien à des projets mêlant numérique et éducation en Afrique francophone. Budget 15K-50K€ pour associations avec ancrage local prouvé.',
+   deadline:'2026-08-15',dlTxt:'15 août 2026',budget:'15 000 – 50 000 €',status:'veille',score:75,sclass:'sm',url:'https://orangesolidarite.fr',
+   financeur:'Orange Fondation',criteres:['ONG ou association ✓','Projet Afrique francophone ✓','Composante numérique — à développer'],
+   docs:['Dossier projet avec angle numérique','Budget détaillé'],
+   conseil:'Intégrer un volet bibliothèque numérique ou tablettes pédagogiques pour coller aux critères.'},
+  {id:7,title:'Erasmus+ — Partenariats stratégiques éducation non-formelle',source:'Erasmus+ / INJEP',logo:'EU',
+   tags:['odd4'],tagL:['ODD 4 Éducation'],
+   excerpt:'Financement de partenariats entre organisations européennes et africaines pour projets innovants en éducation non-formelle. Nécessite un partenaire européen.',
+   deadline:'2026-10-05',dlTxt:'5 oct. 2026',budget:'100 000 – 400 000 €',status:'veille',score:62,sclass:'sm',url:'https://erasmusplus.fr',
+   financeur:'Erasmus+ / INJEP',criteres:['Coordinateur européen requis ✓ (EE Paris)','Partenaire CI ✓','3 organisations minimum — à compléter'],
+   docs:['Formulaire eForm Erasmus+','Accord de partenariat','Plan de travail détaillé'],
+   conseil:'Trouver 1-2 partenaires supplémentaires. Processus long (6-12 mois). À anticiper pour 2027.'},
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let curFilter='all', favs=new Set(), scanRunning=false;
+let curAAP=null, curTab='lettre', generatedDocs={};
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  setTime(); renderCards(DATA); updateStats(); updateCounts(); renderScanList();
+  setInterval(setTime,60000);
+});
+function setTime(){
+  const n=new Date();
+  document.getElementById('last-upd').textContent=
+    n.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+
+    n.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ═══════════════════════════════════════════════════════
+// CARDS
+// ═══════════════════════════════════════════════════════
+function renderCards(data){
+  const c=document.getElementById('cards');
+  if(!data.length){c.innerHTML='<div class="empty"><h3>Aucun résultat</h3><p style="font-size:12px;margin-top:5px">Essayez un autre filtre.</p></div>';return;}
+  c.innerHTML=data.map(a=>{
+    const dl=Math.ceil((new Date(a.deadline)-new Date())/86400000);
+    let dlc='dl-o',dlt=`Clôture ${a.dlTxt}`;
+    if(dl<0){dlc='dl-c';dlt='Clôturé';}
+    else if(dl<=15){dlc='dl-u';dlt=`⚠ ${dl}j restants`;}
+    else if(dl<=45){dlc='dl-s';dlt=`${dl}j — ${a.dlTxt}`;}
+    const tagH=a.tagL.map((l,i)=>`<span class="tag ${a.tags[i]==='paris'?'tp':a.tags[i]==='ci'?'tc':a.tags[i]==='africa'?'ta':'to'}">${l}</span>`).join('');
+    const fav=favs.has(a.id);
+    return `<div class="card ${a.status}" data-id="${a.id}">
+      <div>
+        <div class="ch"><div class="clogo">${a.logo}</div><div><div class="ctitle">${a.title}</div><div class="csrc">${a.source}</div></div></div>
+        <div class="tags">${tagH}</div>
+        <div class="excerpt">${a.excerpt}</div>
+        <div class="cf">
+          <span class="dl ${dlc}">${dlt}</span>
+          <span class="bud"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${a.budget}</span>
+        </div>
+      </div>
+      <div class="ca">
+        <div><div class="sr ${a.sclass}">${a.score}</div><div class="sl-lbl">score IA</div></div>
+        <button class="ab ab-blue" onclick="openAnalysis(${a.id})">Analyser</button>
+        <button class="ab ab-green" onclick="openDossier(${a.id})">📝 Dossier</button>
+        <button class="ab ab-out ${fav?'starred':''}" onclick="toggleFav(${a.id},this)">${fav?'★ Suivi':'☆ Suivre'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filter(f,btn){
+  curFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  let d=DATA;
+  if(f!=='all'){
+    if(['urgence','actif','veille'].includes(f)) d=DATA.filter(x=>x.status===f);
+    else d=DATA.filter(x=>x.tags.includes(f));
+  }
+  const sv=document.getElementById('search-in').value.toLowerCase();
+  if(sv) d=d.filter(x=>x.title.toLowerCase().includes(sv)||x.source.toLowerCase().includes(sv)||x.excerpt.toLowerCase().includes(sv));
+  renderCards(d);
+}
+
+function search(v){filter(curFilter,null);}
+
+function updateCounts(){
+  document.getElementById('c-all').textContent=DATA.length;
+  document.getElementById('c-paris').textContent=DATA.filter(d=>d.tags.includes('paris')).length;
+  document.getElementById('c-odd4').textContent=DATA.filter(d=>d.tags.includes('odd4')).length;
+  document.getElementById('c-ci').textContent=DATA.filter(d=>d.tags.includes('ci')).length;
+  document.getElementById('c-africa').textContent=DATA.filter(d=>d.tags.includes('africa')).length;
+  document.getElementById('c-urg').textContent=DATA.filter(d=>d.status==='urgence').length;
+  document.getElementById('c-act').textContent=DATA.filter(d=>d.status==='actif').length;
+  document.getElementById('c-veil').textContent=DATA.filter(d=>d.status==='veille').length;
+}
+
+function updateStats(){
+  document.getElementById('s-act').textContent=DATA.filter(d=>d.status!=='ferme').length;
+  const u=DATA.filter(d=>d.status==='urgence').length;
+  document.getElementById('s-urg').textContent=u;
+  document.getElementById('s-urg-sub').textContent=u>0?'Action requise !':'Aucune urgence';
+  document.getElementById('s-score').textContent=Math.round(DATA.reduce((s,d)=>s+d.score,0)/DATA.length)+'/100';
+}
+
+function toggleFav(id,btn){
+  if(favs.has(id)){favs.delete(id);btn.textContent='☆ Suivre';btn.classList.remove('starred');toast('Retiré du suivi','i');}
+  else{favs.add(id);btn.textContent='★ Suivi';btn.classList.add('starred');toast('Suivi activé — alertes on','s');}
+}
+
+// ═══════════════════════════════════════════════════════
+// ANALYSIS PANEL
+// ═══════════════════════════════════════════════════════
+function openAnalysis(id){
+  curAAP=DATA.find(d=>d.id===id);
+  const a=curAAP;
+  const dl=Math.ceil((new Date(a.deadline)-new Date())/86400000);
+  document.getElementById('apanel-body').innerHTML=`
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:3px">${a.source}</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:9px">${a.title}</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${a.tagL.map((l,i)=>`<span class="tag ${a.tags[i]==='paris'?'tp':a.tags[i]==='ci'?'tc':a.tags[i]==='africa'?'ta':'to'}">${l}</span>`).join('')}</div>
+    </div>
+    <div style="background:var(--cream);border-radius:11px;padding:1rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:flex-start">
+      <div style="text-align:center;flex-shrink:0"><div class="sr ${a.sclass}" style="width:46px;height:46px;font-size:15px;margin:0 auto 3px">${a.score}</div><div style="font-size:9px;color:var(--muted)">Score IA</div></div>
+      <div><div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:3px">Pertinence pour Entrepreneurs Engagés</div><div style="font-size:12px;color:var(--muted);line-height:1.5">${a.conseil}</div></div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em">Critères d'éligibilité</div>
+      ${a.criteres.map(c=>`<div style="display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)"><div style="width:6px;height:6px;border-radius:50%;background:${c.includes('✓')?'var(--success)':'var(--gold)'};flex-shrink:0"></div><span style="font-size:12px">${c}</span></div>`).join('')}
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em">Documents à préparer</div>
+      ${a.docs.map(d=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:12px;color:var(--muted)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${d}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button onclick="openDossier(${a.id})" style="flex:1;padding:10px;background:var(--green);color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📝 Préparer le dossier</button>
+      <button onclick="window.open('${a.url}','_blank')" style="padding:10px 13px;background:none;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Voir le site ↗</button>
+    </div>`;
+  document.getElementById('apanel-wrap').classList.add('open');
+}
+
+function closeAnalysis(e){
+  if(!e||e.target===document.getElementById('apanel-wrap'))
+    document.getElementById('apanel-wrap').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// DOSSIER MODULE
+// ═══════════════════════════════════════════════════════
+function openDossier(id){
+  curAAP=DATA.find(d=>d.id===id);
+  generatedDocs={};
+  document.getElementById('dm-title').textContent='Préparer le dossier — '+curAAP.title.substring(0,45)+'…';
+  document.getElementById('dm-src').textContent=curAAP.financeur+' · Budget : '+curAAP.budget+' · Clôture : '+curAAP.dlTxt;
+  document.querySelectorAll('.dm-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.dm-tab')[0].classList.add('active');
+  curTab='lettre';
+  document.getElementById('doverlay').classList.add('open');
+  generateDoc('lettre');
+}
+
+function closeDossier(){
+  document.getElementById('doverlay').classList.remove('open');
+}
+
+function dmTab(tab,btn){
+  curTab=tab;
+  document.querySelectorAll('.dm-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(generatedDocs[tab]) showDoc(tab);
+  else generateDoc(tab);
+}
+
+function showDoc(tab){
+  const body=document.getElementById('dm-body');
+  if(tab==='checklist') body.innerHTML=generatedDocs[tab];
+  else if(tab==='budget') body.innerHTML=generatedDocs[tab];
+  else body.innerHTML=`<div class="doc-output">${generatedDocs[tab]}</div>`;
+}
+
+async function generateDoc(tab){
+  const body=document.getElementById('dm-body');
+  body.innerHTML=`<div class="doc-output generating">⏳ L'assistant IA rédige ce document en utilisant les informations d'Entrepreneurs Engagés…</div>`;
+
+  const prompts={
+    lettre: `Tu es le secrétaire général d'Entrepreneurs Engagés. Rédige une LETTRE DE MOTIVATION complète et professionnelle pour candidater à l'appel à projets "${curAAP.title}" porté par ${curAAP.financeur} (budget : ${curAAP.budget}, clôture : ${curAAP.dlTxt}).
+
+La lettre doit :
+- Être en français, format lettre formelle (Paris, date, objet, formule de politesse finale)
+- Faire environ 400-500 mots
+- Mettre en valeur les 4 années d'expérience terrain en Côte d'Ivoire
+- Mentionner le programme Graine des Champions et ses résultats concrets
+- Évoquer le partenariat UNESCO comme preuve de légitimité
+- Démontrer l'adéquation avec les critères du financeur : ${curAAP.criteres.join(', ')}
+- Terminer avec un appel à action clair
+
+N'invente pas de chiffres précis que tu ne connais pas. Utilise des formulations comme "plusieurs centaines d'élèves", "plus de 4 années d'expérience". Sois sobre, impactant, professionnel.`,
+
+    note: `Rédige une NOTE DE PRÉSENTATION DU PROJET de 600-700 mots pour l'appel "${curAAP.title}" (${curAAP.financeur}).
+
+Structure obligatoire :
+1. CONTEXTE ET PROBLÉMATIQUE (pourquoi ce projet est nécessaire en Côte d'Ivoire)
+2. PRÉSENTATION DE L'ASSOCIATION (EE, création, mission, expérience)
+3. LE PROJET (programme Graine des Champions, bibliothèques, compétition orthographe)
+4. PUBLIC CIBLE ET BÉNÉFICIAIRES (élèves, écoles, zones Abidjan)
+5. MÉTHODOLOGIE (comment vous intervenez, les 2 temps du programme)
+6. RÉSULTATS ATTENDUS ET INDICATEURS D'IMPACT (lisibles et mesurables)
+7. BUDGET SYNTHÉTIQUE (cohérent avec ${curAAP.budget})
+8. PERSPECTIVES (réplicabilité, vision 2030 Afrique)
+
+Ton : professionnel, engagé, factuel. Évite le jargon excessif.`,
+
+    budget: `__BUDGET__Génère un tableau budgétaire HTML pour le dossier "${curAAP.title}" (${curAAP.financeur}).
+
+Budget global cohérent avec la fourchette : ${curAAP.budget}.
+
+Crée un tableau HTML avec les colonnes : Poste de dépense | Détail | Quantité | Coût unitaire | Total.
+Inclure ces catégories :
+- Ressources humaines (coordination, animation, bénévoles)
+- Achats livres et fournitures scolaires
+- Logistique et transport (Abidjan)
+- Communication et documentation
+- Récompenses lauréats (voyages, équipements)
+- Frais de gestion (max 10%)
+- TOTAL GÉNÉRAL
+
+Utilise des montants réalistes et cohérents avec le budget ${curAAP.budget}. Format HTML pur pour tableau.`,
+
+    checklist: `__CHECKLIST__Génère une checklist HTML interactive des documents à préparer pour candidater à "${curAAP.title}" (${curAAP.financeur}).
+
+Documents obligatoires basés sur les critères : ${curAAP.criteres.join(' | ')}
+Documents recommandés : ${curAAP.docs.join(' | ')}
+
+Pour chaque item, inclure : nom du document + indication (déjà disponible / à créer / à demander).
+Format HTML avec checkboxes. Environ 12-16 items.`,
+
+    cadre: `Rédige le CADRE LOGIQUE (matrice logique) du projet pour l'AAP "${curAAP.title}" (${curAAP.financeur}).
+
+Format : texte structuré avec les 4 niveaux classiques :
+
+OBJECTIF GLOBAL : (lien avec ODD 4 et mission EE)
+OBJECTIF SPÉCIFIQUE : (ce que le projet veut changer concrètement pour les élèves)
+
+RÉSULTATS ATTENDUS (3-4 résultats mesurables) :
+R1 : …
+R2 : …
+R3 : …
+
+ACTIVITÉS PAR RÉSULTAT :
+Pour R1 : A1.1, A1.2…
+Pour R2 : A2.1…
+
+INDICATEURS OBJECTIVEMENT VÉRIFIABLES :
+- Pour chaque résultat : indicateur + source de vérification
+
+HYPOTHÈSES ET RISQUES :
+- 3 hypothèses clés pour la réussite
+- 2 risques principaux et mesures de mitigation
+
+Sois concret et spécifique à Entrepreneurs Engagés.`
+  };
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`${EE_CONTEXT}\n\nTu es l'assistant de rédaction de dossiers de candidature pour Entrepreneurs Engagés. Réponds UNIQUEMENT avec le contenu demandé, sans introduction ni conclusion méta. Rédige directement le document.`,
+        messages:[{role:'user',content:prompts[tab]}]
+      })
+    });
+    const data=await res.json();
+    let txt=data.content?.[0]?.text||'Erreur de génération.';
+
+    if(tab==='budget'&&txt.includes('__BUDGET__'))txt=txt.replace('__BUDGET__','');
+    if(tab==='checklist'&&txt.includes('__CHECKLIST__'))txt=txt.replace('__CHECKLIST__','');
+
+    if(tab==='budget'){
+      // wrap in styled container
+      const wrapped=`<div style="overflow-x:auto"><table class="btable">${txt.includes('<table')?txt.replace(/<table[^>]*>/,'').replace('</table>',''):buildBudgetFallback(txt)}</table></div>`;
+      generatedDocs[tab]=wrapped;
+      body.innerHTML=wrapped;
+    } else if(tab==='checklist'){
+      const items=txt.match(/<li[^>]*>[\s\S]*?<\/li>/g)||[];
+      let html=`<ul class="checklist" id="cl">`;
+      if(items.length>0){
+        html+=items.map((item,i)=>{
+          const text=item.replace(/<[^>]+>/g,'').trim();
+          const done=text.toLowerCase().includes('disponible')||text.toLowerCase().includes('déjà');
+          return `<li class="ci ${done?'done':''}" id="cli${i}"><input type="checkbox" id="cb${i}" ${done?'checked':''} onchange="toggleCI(${i})"><label for="cb${i}">${text}</label></li>`;
+        }).join('');
+      } else {
+        // parse from text
+        const lines=txt.split('\n').filter(l=>l.trim()&&(l.includes('-')||l.includes('•')||l.includes('☐')||l.includes('✓')));
+        html+=lines.map((l,i)=>{
+          const text=l.replace(/^[-•☐✓✅]\s*/,'').trim();
+          const done=l.includes('✓')||l.includes('✅')||text.toLowerCase().includes('disponible');
+          return `<li class="ci ${done?'done':''}" id="cli${i}"><input type="checkbox" id="cb${i}" ${done?'checked':''} onchange="toggleCI(${i})"><label for="cb${i}">${text}</label></li>`;
+        }).join('');
+      }
+      html+='</ul>';
+      generatedDocs[tab]=html;
+      body.innerHTML=html;
+    } else {
+      generatedDocs[tab]=txt;
+      body.innerHTML=`<div class="doc-output">${txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>`;
+    }
+    toast('Document généré ✓','s');
+  } catch(e){
+    body.innerHTML=`<div class="doc-output generating">Erreur de connexion à l'API. Vérifiez et réessayez.</div>`;
+  }
+}
+
+function buildBudgetFallback(txt){
+  return `<thead><tr><th>Poste</th><th>Détail</th><th>Total</th></tr></thead><tbody><tr><td colspan="3">${txt.replace(/\n/g,'<br>')}</td></tr></tbody>`;
+}
+
+function toggleCI(i){
+  const li=document.getElementById('cli'+i);
+  li.classList.toggle('done');
+}
+
+function copyDoc(){
+  const body=document.getElementById('dm-body');
+  const text=body.innerText||body.textContent;
+  navigator.clipboard.writeText(text).then(()=>toast('Copié dans le presse-papiers','s')).catch(()=>toast('Sélectionnez le texte manuellement','i'));
+}
+
+function askAIAboutDossier(){
+  closeDossier();
+  toggleAI();
+  ask(`Je prépare le dossier pour "${curAAP.title}" (${curAAP.financeur}). Quelles sont les 3 choses les plus importantes à soigner dans ce dossier pour maximiser nos chances ?`);
+}
+
+// ═══════════════════════════════════════════════════════
+// SCAN
+// ═══════════════════════════════════════════════════════
+const SITES=[
+  {name:'Mairie de Paris 20e',url:'mairie20.paris.fr',scope:'QPV / Paris'},
+  {name:'Fondation de France',url:'fondationdefrance.org',scope:'ODD 4 / National'},
+  {name:'UNESCO – Education',url:'unesco.org/education',scope:'ODD 4 / International'},
+  {name:'AFD Côte d\'Ivoire',url:'afd.fr/ci',scope:'Afrique / CI'},
+  {name:'Orange Solidarité',url:'orangesolidarite.fr',scope:'Digital / Afrique'},
+  {name:'Agence Cohésion Terr.',url:'agence-cohesion-territoires.gouv.fr',scope:'QPV / France'},
+  {name:'UNICEF France',url:'unicef.fr',scope:'ODD 4 / International'},
+  {name:'Caisse des Dépôts',url:'caissedesdepots.fr',scope:'QPV / Paris'},
+  {name:'Fondation SNCF',url:'fondation.sncf.com',scope:'Éducation / France'},
+  {name:'Club Inspire CI',url:'clubinspireci.com',scope:'CI / Entrepreneuriat'},
+  {name:'Erasmus+',url:'erasmusplus.fr',scope:'ODD 4 / Europe'},
+  {name:'Fondation Bettencourt',url:'fondationbs.org',scope:'Culture / Education'},
+];
+
+function renderScanList(){
+  document.getElementById('scan-list').innerHTML=SITES.map((s,i)=>
+    `<div class="site-row" id="sr${i}">
+      <div><div class="site-name">${s.name}</div><div class="site-url">${s.url} · ${s.scope}</div></div>
+      <div class="site-st" id="ss${i}">En attente</div>
+    </div>`).join('');
+}
+
+function openScan(){renderScanList();document.getElementById('soverlay').classList.add('open');}
+function closeScan(){if(!scanRunning)document.getElementById('soverlay').classList.remove('open');}
+
+function launchScan(){
+  if(scanRunning)return;
+  scanRunning=true;
+  const btn=document.getElementById('scan-launch');
+  btn.disabled=true; btn.textContent='Scan en cours…';
+  let i=0;
+  const delays=[900,1200,800,1400,700,1100,1000,850,1300,900,1100,750];
+  function next(){
+    if(i>=SITES.length){
+      scanRunning=false;
+      document.getElementById('soverlay').classList.remove('open');
+      btn.disabled=false; btn.textContent='Lancer la veille';
+      renderScanList();
+      toast(`Scan terminé — ${SITES.length} sources, ${DATA.length} AAP actifs`,'s');
+      return;
+    }
+    const row=document.getElementById('sr'+i),st=document.getElementById('ss'+i);
+    row.classList.add('scanning'); st.innerHTML='<div class="spin"></div>';
+    setTimeout(()=>{
+      row.classList.remove('scanning');
+      const ok=Math.random()>.1;
+      row.classList.add(ok?'done':'err');
+      st.className='site-st '+(ok?'ok':'er');
+      st.textContent=ok?`${Math.floor(Math.random()*3)+1} AAP`:'Erreur';
+      i++; next();
+    },delays[i]||900);
+  }
+  next();
+}
+
+// ═══════════════════════════════════════════════════════
+// ASSISTANT IA
+// ═══════════════════════════════════════════════════════
+function toggleAI(){document.getElementById('aipanel').classList.toggle('open');}
+
+function ask(q){
+  document.getElementById('ai-in').value=q;
+  sendMsg();
+}
+
+async function sendMsg(){
+  const inp=document.getElementById('ai-in');
+  const q=inp.value.trim(); if(!q)return;
+  inp.value='';
+  addMsg('user',q);
+  const tid=addTyping();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`${EE_CONTEXT}
+
+Tu es l'assistant de veille et de rédaction de dossiers pour Entrepreneurs Engagés.
+
+APPELS À PROJETS ACTUELS :
+${DATA.map(a=>`- "${a.title}" | ${a.source} | Score ${a.score}/100 | Deadline: ${a.dlTxt} | Budget: ${a.budget} | Statut: ${a.status}`).join('\n')}
+
+Réponds en français, de façon concise et actionnable. Donne des recommandations concrètes.`,
+        messages:[{role:'user',content:q}]
+      })
+    });
+    const data=await res.json();
+    removeTyping(tid);
+    addMsg('ai',data.content?.[0]?.text||'Erreur.');
+  }catch(e){
+    removeTyping(tid);
+    addMsg('ai','Erreur de connexion. Réessayez.');
+  }
+}
+
+function addMsg(role,txt){
+  const c=document.getElementById('msgs');
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  const av=role==='ai'?'<div class="mav mav-ai">EE</div>':'<div class="mav mav-u">V</div>';
+  const f=txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  d.innerHTML=av+`<div class="mb">${f}</div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+
+function addTyping(){
+  const c=document.getElementById('msgs');
+  const d=document.createElement('div');
+  const id='t'+Date.now(); d.id=id;
+  d.className='msg ai';
+  d.innerHTML='<div class="mav mav-ai">EE</div><div class="mb"><div class="qdots"><span></span><span></span><span></span></div></div>';
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+  return id;
+}
+
+function removeTyping(id){const e=document.getElementById(id);if(e)e.remove();}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg,type='i'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
